@@ -1,18 +1,17 @@
 from datetime import datetime
 from typing import Optional
-import uuid
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
-class GameModel(BaseModel):
-    id: str = Field(default_factory=uuid.uuid4, alias="_id")
+class GameCreateDTO(BaseModel):
     title: str
     description: str
     platform: str
     genre: str
     release_date: datetime
     developer: str
-class GameUpdateModel(BaseModel):
+
+class GameUpdateDTO(BaseModel):
     title: Optional[str]
     description: Optional[str]
     platform: Optional[str]
