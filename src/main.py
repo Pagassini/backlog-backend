@@ -18,7 +18,7 @@ async def root():
 
 @app.on_event("startup")
 def startup_db_client():
-    app.mongodb_client = MongoClient(config["MONGODB_CONNECTION_URI"], uuidRepresentation='standard')
+    app.mongodb_client = MongoClient(config["MONGODB_CONNECTION_URI"])
     app.database = app.mongodb_client[config["DB_NAME"]]
     print("Connected to the MongoDB database!")
 

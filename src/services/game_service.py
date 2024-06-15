@@ -12,9 +12,7 @@ class GameService:
     
     @staticmethod
     async def create(db, game_dto: GameCreateDTO) -> GameViewModel:
-        game_id = str(uuid.uuid4())
         game_model = GameModel(
-            id=game_id,
             title=game_dto.title,
             description=game_dto.description,
             platform=game_dto.platform,
@@ -34,8 +32,16 @@ class GameService:
         return game_view_models
     
     @staticmethod
-    async def update_game(db, game_id: str, game_update_dto: GameUpdateDTO) -> GameViewModel:
-        update_data = game_update_dto.dict(exclude_unset=True)
+    async def update(db, game_id: str, game_update_dto: GameUpdateDTO) -> GameViewModel:
+        update_data = GameModel(
+            title=game_update_dto.title,
+            description=game_update_dto.description,
+            platform=game_update_dto.description,
+            genre= game_update_dto.genre,
+            release_date= game_update_dto.release_date,
+            developer= game_update_dto.developer
+        )
+        
         updated_game = await GameRepository.update(db, game_id, update_data)
         return GameViewModel(**updated_game)
     

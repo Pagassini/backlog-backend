@@ -11,6 +11,7 @@ class GameRepository:
     @staticmethod
     async def create(db, game: GameModel):
         game_dict = game.dict(by_alias=True)
+        game_dict["_id"] = str(game_dict["_id"])
         result = db['games'].insert_one(game_dict)
         game_dict['_id'] = str(result.inserted_id)
         return game_dict
@@ -18,10 +19,8 @@ class GameRepository:
     @staticmethod
     async def update(db, id: str, game: GameUpdateModel):
         update_data = {k: v for k, v in game.dict(exclude_unset=True).items()}
-        result = db["games"].update_one({"_id": ObjectId(id)}, {"$set": update_data})
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404)
-        updated_game = db["games"].find_one({"_id": ObjectId(id)})
+        db["games"].update_one({"_id": id}, {"$set": update_data})
+        updated_game = db["games"].find_one({"_id": id})
         updated_game["_id"] = str(updated_game["_id"])
         return updated_game
     
