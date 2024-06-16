@@ -24,7 +24,7 @@ class GameService:
     
     @staticmethod
     async def find_all(db) -> List[GameViewModel]:
-        games_cursor = db['games'].find()
+        games_cursor = await GameRepository.find_all(db)
         games = []
         for game in games_cursor:
             game_view_model = GameViewModel(**game)
@@ -32,7 +32,11 @@ class GameService:
         return games
     
     @staticmethod
-    async def update(db, game_id: str, game_update_dto: GameUpdateDTO) -> GameViewModel:
+    async def find_by_id(db, id: str) -> GameViewModel:
+        return await GameRepository.find_by_id(db, id)
+    
+    @staticmethod
+    async def update(db, id: str, game_update_dto: GameUpdateDTO) -> GameViewModel:
         update_data = GameModel(
             title=game_update_dto.title,
             description=game_update_dto.description,
@@ -42,10 +46,10 @@ class GameService:
             developer= game_update_dto.developer
         )
         
-        updated_game = await GameRepository.update(db, game_id, update_data)
+        updated_game = await GameRepository.update(db, id, update_data)
         return GameViewModel(**updated_game)
     
     @staticmethod
-    async def delete(db, game_id: str) -> bool:
-        deleted = await GameRepository.delete(db, game_id)
+    async def delete(db, id: str) -> bool:
+        deleted = await GameRepository.delete(db, id)
         return deleted

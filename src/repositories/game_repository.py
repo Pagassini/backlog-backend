@@ -1,5 +1,3 @@
-from bson import ObjectId
-from fastapi import HTTPException
 from models.game import GameModel, GameUpdateModel
 
 
@@ -28,5 +26,10 @@ class GameRepository:
     
     @staticmethod
     async def find_all(db):
-        games = db['games'].find(limit=50)
+        games = db['games'].find()
         return games
+    
+    @staticmethod
+    async def find_by_id(db, id: str):
+        game = db['games'].find_one(id)
+        return game
