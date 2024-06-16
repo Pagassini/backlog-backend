@@ -1,7 +1,4 @@
-
-
 from typing import List
-import uuid
 from models.dtos.game_dto import GameCreateDTO, GameUpdateDTO
 from models.game import GameModel
 from models.viewmodels.game_viewmodel import GameViewModel
@@ -27,9 +24,12 @@ class GameService:
     
     @staticmethod
     async def find_all(db) -> List[GameViewModel]:
-        games = await db['games'].find().to_list(None)
-        game_view_models = [GameViewModel(**game) for game in games]
-        return game_view_models
+        games_cursor = db['games'].find()
+        games = []
+        for game in games_cursor:
+            game_view_model = GameViewModel(**game)
+            games.append(game_view_model)
+        return games
     
     @staticmethod
     async def update(db, game_id: str, game_update_dto: GameUpdateDTO) -> GameViewModel:

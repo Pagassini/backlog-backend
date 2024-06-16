@@ -10,9 +10,17 @@ from services.game_service import GameService
 router = APIRouter()
 
 @router.post("/", response_model=GameViewModel)
-async def create_game(game: GameCreateDTO, request: Request):
+async def post(game: GameCreateDTO, request: Request):
     return await GameService.create(request.app.database, game)
 
 @router.put("/{id}", response_model=GameViewModel)
-async def update_game(id: str, game: GameUpdateDTO, request: Request):
+async def update(id: str, game: GameUpdateDTO, request: Request):
     return await GameService.update(request.app.database, id, game)
+
+@router.delete("/{id}")
+async def delete(id: str, request: Request):
+    return await GameService.delete(request.app.database, id)
+
+@router.get("/", response_model=List[GameViewModel])
+async def get(request: Request):
+    return await GameService.find_all(request.app.database)

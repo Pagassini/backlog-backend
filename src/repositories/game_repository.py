@@ -1,6 +1,3 @@
-
-
-
 from bson import ObjectId
 from fastapi import HTTPException
 from models.game import GameModel, GameUpdateModel
@@ -26,7 +23,7 @@ class GameRepository:
     
     @staticmethod
     async def delete(db, id: str):
-        result = db['games'].delete_one({"_id": ObjectId(id)})
+        result = db['games'].delete_one({"_id": id})
         return result.deleted_count > 0
     
     @staticmethod
