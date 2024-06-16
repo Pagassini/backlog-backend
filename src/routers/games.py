@@ -9,7 +9,7 @@ from services.game_service import GameService
 
 router = APIRouter()
 
-@router.post("/", response_model=GameViewModel)
+@router.post("", response_model=GameViewModel)
 async def post(game: GameCreateDTO, request: Request):
     return await GameService.create(request.app.database, game)
 
@@ -21,6 +21,6 @@ async def update(id: str, game: GameUpdateDTO, request: Request):
 async def delete(id: str, request: Request):
     return await GameService.delete(request.app.database, id)
 
-@router.get("/", response_model=List[GameViewModel])
+@router.get("", response_model=List[GameViewModel])
 async def get(request: Request):
     return await GameService.find_all(request.app.database)
