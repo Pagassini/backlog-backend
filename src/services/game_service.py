@@ -9,6 +9,9 @@ class GameService:
     
     @staticmethod
     async def create(db, game_dto: GameCreateDTO) -> GameViewModel:
+        
+        
+        
         game_model = GameModel(
             title=game_dto.title,
             description=game_dto.description,

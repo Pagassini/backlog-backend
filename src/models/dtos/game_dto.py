@@ -1,20 +1,20 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 
 class GameCreateDTO(BaseModel):
     title: str
     description: str
-    platform: str
-    genre: str
+    platform: List[str]
+    genre: List[str]
     release_date: datetime
     developer: str
 
 class GameUpdateDTO(BaseModel):
     title: Optional[str]
-    description: Optional[str]
-    platform: Optional[str]
+    description: Optional[List[str]]
+    platform: Optional[List[str]]
     genre: Optional[str]
     release_date: Optional[datetime]
     developer: Optional[str]
