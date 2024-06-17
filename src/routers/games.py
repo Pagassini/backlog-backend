@@ -25,4 +25,4 @@ async def get(request: Request):
 
 @router.get("/{id}")
 async def get(id: str, request: Request):
-    return await GameService.find_by_id(request.app.database)
+    return await GameService.find_by_id(request.app.database, id)

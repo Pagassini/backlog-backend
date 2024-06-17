@@ -13,8 +13,8 @@ class GameCreateDTO(BaseModel):
 
 class GameUpdateDTO(BaseModel):
     title: Optional[str]
-    description: Optional[List[str]]
+    description: Optional[str]
     platform: Optional[List[str]]
-    genre: Optional[str]
+    genre: Optional[List[str]]
     release_date: Optional[datetime]
     developer: Optional[str]
