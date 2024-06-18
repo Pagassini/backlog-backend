@@ -6,7 +6,8 @@ from pydantic import BaseModel
 class GameViewModel(BaseModel):
     title: str
     description: str
-    platform: List[str]
-    genre: List[str]
+    platforms: List[str]
+    genres: List[str]
     release_date: datetime
     developer: str
+    publisher: str

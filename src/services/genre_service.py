@@ -1,6 +1,3 @@
-
-
-
 from typing import List
 from models.dtos.genre_dto import GenreCreateDTO
 from models.genre import GenreModel

@@ -1,5 +1,7 @@
 from http.client import HTTPException
 from typing import List
+from exceptions.genre_exceptions import GenreNotFoundException
+from exceptions.platform_exceptions import PlatformNotFoundException
 from models.dtos.game_dto import GameCreateDTO, GameUpdateDTO
 from models.game import GameModel, GameUpdateModel
 from models.viewmodels.game_viewmodel import GameViewModel
@@ -13,26 +15,27 @@ class GameService:
     @staticmethod
     async def create(db, game_dto: GameCreateDTO) -> GameViewModel:
         
-        for platform_id in game_dto.platform:
-            if not await PlatformRepository.exists(db, platform_id):
-                raise HTTPException(status_code=400)
+        for platforms in game_dto.platforms:
+            if not await PlatformRepository.exists(db, platforms):
+                raise PlatformNotFoundException()
         
-        for genre_id in game_dto.genre:
-            if not await GenreRepository.exists(db, genre_id):
-                raise HTTPException(status_code=400)
+        for genres in game_dto.genres:
+            if not await GenreRepository.exists(db, genres):
+                raise GenreNotFoundException()
         
         game_model = GameModel(
             title=game_dto.title,
             description=game_dto.description,
-            platform=game_dto.platform,
-            genre=game_dto.genre,
+            platforms=game_dto.platforms,
+            genres=game_dto.genres,
             release_date=game_dto.release_date,
             developer=game_dto.developer,
+            publisher=game_dto.publisher
         )
         
         created_game = await GameRepository.create(db, game_model)
-        created_game['platform'] = [platform_id for platform_id in created_game['platform']]
-        created_game['genre'] = [genre_id for genre_id in created_game['genre']]
+        created_game['platforms'] = [platform for platform in created_game['platforms']]
+        created_game['genres'] = [genre for genre in created_game['genres']]
         return GameViewModel(**created_game)
 
     
@@ -52,26 +55,27 @@ class GameService:
     @staticmethod
     async def update(db, id: str, game_update_dto: GameUpdateDTO) -> GameViewModel:
         
-        for platform_id in game_update_dto.platform:
-            if not await PlatformRepository.exists(db, platform_id):
-                raise HTTPException(status_code=400)
+        for platform in game_update_dto.platforms:
+            if not await PlatformRepository.exists(db, platform):
+                raise PlatformNotFoundException()
         
-        for genre_id in game_update_dto.genre:
-            if not await GenreRepository.exists(db, genre_id):
-                raise HTTPException(status_code=400)
+        for genre in game_update_dto.genres:
+            if not await GenreRepository.exists(db, genre):
+                raise GenreNotFoundException()
             
         update_data = GameUpdateModel(
             title=game_update_dto.title,
             description=game_update_dto.description,
-            platform=game_update_dto.platform,
-            genre= game_update_dto.genre,
+            platforms=game_update_dto.platforms,
+            genres= game_update_dto.genres,
             release_date= game_update_dto.release_date,
-            developer= game_update_dto.developer
+            developer= game_update_dto.developer,
+            publisher= game_update_dto.publisher
         )
         
         updated_game = await GameRepository.update(db, id, update_data)
-        updated_game['platform'] = [platform_id for platform_id in updated_game['platform']]
-        updated_game['genre'] = [genre_id for genre_id in updated_game['genre']]
+        updated_game['platforms'] = [platforms for platforms in updated_game['platforms']]
+        updated_game['genres'] = [genres for genres in updated_game['genres']]
         return GameViewModel(**updated_game)
     
     @staticmethod

@@ -8,14 +8,16 @@ class GameModel(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias='_id')
     title: str
     description: str
-    platform: List[str]
-    genre: List[str]
+    platforms: List[str]
+    genres: List[str]
     release_date: datetime
     developer: str
+    publisher: str
 class GameUpdateModel(BaseModel):
-    title: Optional[str]
-    description: Optional[str]
-    platform: Optional[List[str]]
-    genre: Optional[List[str]]
-    release_date: Optional[datetime]
-    developer: Optional[str]
+    title: str
+    description: str
+    platforms: List[str]
+    genres: List[str]
+    release_date: datetime
+    developer: str
+    publisher: str

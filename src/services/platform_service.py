@@ -1,5 +1,3 @@
-
-
 from typing import List
 from models.dtos.platform_dto import PlatformCreateDTO
 from models.platform import PlatformModel

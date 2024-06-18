@@ -1,5 +1,3 @@
-
-
 from models.platform import PlatformModel
 
 
