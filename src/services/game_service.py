@@ -1,5 +1,6 @@
 from http.client import HTTPException
 from typing import List
+from exceptions.game_exceptions import GameAlreadyExistsException
 from exceptions.genre_exceptions import GenreNotFoundException
 from exceptions.platform_exceptions import PlatformNotFoundException
 from models.dtos.game_dto import GameCreateDTO, GameUpdateDTO
@@ -22,6 +23,9 @@ class GameService:
         for genres in game_dto.genres:
             if not await GenreRepository.exists(db, genres):
                 raise GenreNotFoundException()
+        
+        if await GameRepository.exists(db, game_dto.title):
+                raise GameAlreadyExistsException()
         
         game_model = GameModel(
             title=game_dto.title,
@@ -62,6 +66,9 @@ class GameService:
         for genre in game_update_dto.genres:
             if not await GenreRepository.exists(db, genre):
                 raise GenreNotFoundException()
+        
+        if await GameRepository.exists(db, game_update_dto.title):
+            raise GameAlreadyExistsException()
             
         update_data = GameUpdateModel(
             title=game_update_dto.title,

@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI, status
 from pymongo import MongoClient
 from dotenv import dotenv_values
-from exceptions.game_exceptions import GameNotFoundException
+from exceptions.game_exceptions import GameAlreadyExistsException, GameNotFoundException
 from exceptions.genre_exceptions import GenreNotFoundException
 from exceptions.handlers.game_exception_handler import GameExceptionHandler
 from exceptions.handlers.genre_exception_handler import GenreExceptionHandler
@@ -25,6 +25,13 @@ app.add_exception_handler(
     exc_class_or_status_code=GameNotFoundException,
     handler=GameExceptionHandler.create_exception_handler(
         status.HTTP_404_NOT_FOUND
+    ),
+)
+
+app.add_exception_handler(
+    exc_class_or_status_code=GameAlreadyExistsException,
+    handler=GameExceptionHandler.create_exception_handler(
+        status.HTTP_400_BAD_REQUEST
     ),
 )
 

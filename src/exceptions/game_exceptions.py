@@ -8,3 +8,8 @@ class GameNotFoundException(GameException):
     def __init__(self):
         self.message = f"One or more games not found."
         super().__init__(self.message)
+        
+class GameAlreadyExistsException(GameException):
+    def __init__(self):
+        self.message = f"A game with the same title already exists"
+        super().__init__(self.message)

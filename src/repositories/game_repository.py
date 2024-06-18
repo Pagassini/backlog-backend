@@ -26,10 +26,13 @@ class GameRepository:
     
     @staticmethod
     async def find_all(db):
-        games = db['games'].find()
-        return games
+        return db['games'].find()
     
     @staticmethod
     async def find_by_id(db, id: str):
-        game = db['games'].find_one(id)
-        return game
+        return db['games'].find_one(id)
+    
+    @staticmethod
+    async def exists(db, title: str):
+        return db['games'].find_one({"title": title})
+        
