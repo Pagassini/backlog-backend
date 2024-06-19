@@ -13,6 +13,10 @@ class PlatformRepository:
         return db["platforms"].find_one({"_id": id})
     
     @staticmethod
+    async def name_exists(db, name: str) -> bool:
+        return db["platforms"].find_one({"name": name})
+    
+    @staticmethod
     async def create(db, platform: PlatformModel):
         platform_dict = platform.dict(by_alias=True)
         platform_dict["_id"] = str(platform_dict["_id"])

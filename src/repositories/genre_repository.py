@@ -13,6 +13,10 @@ class GenreRepository:
         return db["genres"].find_one({"_id": id})
     
     @staticmethod
+    async def name_exists(db, name: str) -> bool:
+        return db["genres"].find_one({"name": name})
+    
+    @staticmethod
     async def create(db, genre: GenreModel):
         genre_dict = genre.dict(by_alias=True)
         genre_dict["_id"] = str(genre_dict["_id"])

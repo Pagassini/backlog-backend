@@ -1,4 +1,5 @@
 from typing import List
+from exceptions.platform_exceptions import PlatformAlreadyExistsException
 from models.dtos.platform_dto import PlatformCreateDTO
 from models.platform import PlatformModel
 from models.viewmodels.platform_viewmodel import PlatformViewModel
@@ -9,6 +10,9 @@ class PlatformService:
     
     @staticmethod
     async def create(db, platform_dto: PlatformCreateDTO) -> PlatformViewModel:
+        
+        if await PlatformRepository.name_exists(db, platform_dto.name):
+            raise PlatformAlreadyExistsException()
         
         platform_model = PlatformModel(
             name=platform_dto.name

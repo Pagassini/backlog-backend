@@ -3,11 +3,11 @@ from fastapi import FastAPI, status
 from pymongo import MongoClient
 from dotenv import dotenv_values
 from exceptions.game_exceptions import GameAlreadyExistsException, GameNotFoundException
-from exceptions.genre_exceptions import GenreNotFoundException
+from exceptions.genre_exceptions import GenreAlreadyExistsException, GenreNotFoundException
 from exceptions.handlers.game_exception_handler import GameExceptionHandler
 from exceptions.handlers.genre_exception_handler import GenreExceptionHandler
 from exceptions.handlers.platform_exception_handler import PlatformExceptionHandler
-from exceptions.platform_exceptions import PlatformNotFoundException
+from exceptions.platform_exceptions import PlatformAlreadyExistsException, PlatformNotFoundException
 from routers.games import router as game_router
 from routers.genre import router as genre_router
 from routers.platforms import router as platform_router
@@ -43,9 +43,23 @@ app.add_exception_handler(
 )
 
 app.add_exception_handler(
+    exc_class_or_status_code=PlatformAlreadyExistsException,
+    handler=PlatformExceptionHandler.create_exception_handler(
+        status.HTTP_400_BAD_REQUEST
+    )
+)
+
+app.add_exception_handler(
     exc_class_or_status_code=GenreNotFoundException,
     handler=GenreExceptionHandler.create_exception_handler(
         status.HTTP_404_NOT_FOUND
+    )
+)
+
+app.add_exception_handler(
+    exc_class_or_status_code=GenreAlreadyExistsException,
+    handler=GenreExceptionHandler.create_exception_handler(
+        status.HTTP_400_BAD_REQUEST
     )
 )
 

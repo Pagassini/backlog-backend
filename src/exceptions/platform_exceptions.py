@@ -10,3 +10,8 @@ class PlatformNotFoundException(PlatformException):
     def __init__(self):
         self.message = f"One or more platforms not found."
         super().__init__(self.message)
+        
+class PlatformAlreadyExistsException(PlatformException):
+    def __init__(self):
+        self.message = f"Platform already exists. "
+        super().__init__(self.message)
