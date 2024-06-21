@@ -3,8 +3,10 @@ from fastapi import FastAPI, status
 from pymongo import MongoClient
 from dotenv import dotenv_values
 import uvicorn
+from exceptions.backlog_exceptions import BacklogNotFoundException
 from exceptions.game_exceptions import GameAlreadyExistsException, GameNotFoundException
 from exceptions.genre_exceptions import GenreAlreadyExistsException, GenreNotFoundException
+from exceptions.handlers.backlog_exception_handler import BacklogExceptionHandler
 from exceptions.handlers.game_exception_handler import GameExceptionHandler
 from exceptions.handlers.genre_exception_handler import GenreExceptionHandler
 from exceptions.handlers.platform_exception_handler import PlatformExceptionHandler
@@ -15,6 +17,7 @@ from routers.games import router as game_router
 from routers.genre import router as genre_router
 from routers.platforms import router as platform_router
 from routers.users import router as users_router
+from routers.backlogs import router as backlogs_router
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 config = dotenv_values(dotenv_path)
@@ -25,6 +28,7 @@ app.include_router(game_router, tags=["Games"], prefix=f"{config['PREFIX']}/game
 app.include_router(genre_router, tags=["Genres"], prefix=f"{config['PREFIX']}/genres")
 app.include_router(platform_router, tags=["Platforms"], prefix=f"{config['PREFIX']}/platforms")
 app.include_router(users_router, tags=["Users"], prefix=f"{config['PREFIX']}/users")
+app.include_router(backlogs_router, tags=["Backlogs"], prefix=f"{config['PREFIX']}/backlogs")
 
 app.add_exception_handler(
     exc_class_or_status_code=GameNotFoundException,
@@ -85,6 +89,13 @@ app.add_exception_handler(
 app.add_exception_handler(
     exc_class_or_status_code=UserNotFoundException,
     handler=UserExceptionHandler.create_exception_handler(
+        status.HTTP_404_NOT_FOUND
+    )
+)
+
+app.add_exception_handler(
+    exc_class_or_status_code=BacklogNotFoundException,
+    handler=BacklogExceptionHandler.create_exception_handler(
         status.HTTP_404_NOT_FOUND
     )
 )
