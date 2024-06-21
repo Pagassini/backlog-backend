@@ -1,5 +1,5 @@
 from typing import List
-from exceptions.user_exceptions import EmailAlreadyExistsException, UserNameAlreadyExistsException
+from exceptions.user_exceptions import EmailAlreadyExistsException, UserNameAlreadyExistsException, UserNotFoundException
 from models.dtos.user_dto import UserCreateDTO, UserUpdateDTO
 from models.user import UserModel, UserUpdateModel
 from models.viewmodels.user_viewmodel import UserViewModel
@@ -37,6 +37,9 @@ class UserService:
     
     @staticmethod
     async def update(db, id: str, user_update_dto: UserUpdateDTO) -> UserViewModel:
+
+        if not await UserRepository.exists(db, id):
+            raise UserNotFoundException()
         
         if await UserRepository.username_exists(db, user_update_dto.username):
             raise UserNameAlreadyExistsException()
@@ -55,5 +58,9 @@ class UserService:
     
     @staticmethod
     async def delete(db, id: str) -> bool:
+
+        if not await UserRepository.exists(db, id):
+            raise UserNotFoundException()
+
         deleted = await UserRepository.delete(db, id)
         return deleted

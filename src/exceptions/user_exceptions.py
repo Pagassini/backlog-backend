@@ -14,3 +14,8 @@ class EmailAlreadyExistsException(UserException):
     def __init__(self):
         self.message = f"this email already exists"
         super().__init__(self.message)
+
+class UserNotFoundException(UserException):
+    def __init__(self):
+        self.message = f"User not found."
+        super().__init__(self.message)

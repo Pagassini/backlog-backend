@@ -38,5 +38,5 @@ class GameRepository:
     
     @staticmethod
     async def exists(db, id: str):
-        return db['games'].find_one({"id": id})
+        return db['games'].find_one({"_id": id})
         

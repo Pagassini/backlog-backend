@@ -37,3 +37,8 @@ class UserRepository:
     @staticmethod
     async def email_exists(db, email: str):
         return db['users'].find_one({"email": email})
+    
+    @staticmethod
+    async def exists(db, id: str):
+        return db['users'].find_one({"_id": id})
+    
