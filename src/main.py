@@ -3,7 +3,7 @@ from fastapi import FastAPI, status
 from pymongo import MongoClient
 from dotenv import dotenv_values
 import uvicorn
-from exceptions.backlog_exceptions import BacklogNotFoundException
+from exceptions.backlog_exceptions import BacklogNotFoundException, UserHasGameException
 from exceptions.game_exceptions import GameAlreadyExistsException, GameNotFoundException
 from exceptions.genre_exceptions import GenreAlreadyExistsException, GenreNotFoundException
 from exceptions.handlers.backlog_exception_handler import BacklogExceptionHandler
@@ -97,6 +97,13 @@ app.add_exception_handler(
     exc_class_or_status_code=BacklogNotFoundException,
     handler=BacklogExceptionHandler.create_exception_handler(
         status.HTTP_404_NOT_FOUND
+    )
+)
+
+app.add_exception_handler(
+    exc_class_or_status_code=UserHasGameException,
+    handler=BacklogExceptionHandler.create_exception_handler(
+        status.HTTP_400_BAD_REQUEST
     )
 )
 

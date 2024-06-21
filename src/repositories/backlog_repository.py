@@ -33,3 +33,7 @@ class BacklogRepository:
     @staticmethod
     async def exists(db, id: str):
         return db['backlogs'].find_one({"_id": id})
+    
+    @staticmethod
+    async def game_exists_in_user_backlog(db, user_id: str, game_id: str):
+        return db['backlogs'].find_one({"user_id": user_id, "game_id": game_id})

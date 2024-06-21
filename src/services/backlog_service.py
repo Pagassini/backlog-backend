@@ -1,5 +1,5 @@
 from typing import List
-from exceptions.backlog_exceptions import BacklogNotFoundException
+from exceptions.backlog_exceptions import BacklogNotFoundException, UserHasGameException
 from exceptions.game_exceptions import GameNotFoundException
 from exceptions.user_exceptions import UserNotFoundException
 from models.backlog import BacklogModel, BacklogUpdateModel
@@ -14,6 +14,9 @@ class BacklogService:
 
     @staticmethod
     async def create(db, backlog_dto: BacklogCreateDTO) -> BacklogViewModel:
+
+        if await BacklogRepository.game_exists_in_user_backlog(db, backlog_dto.user_id, backlog_dto.game_id):
+            raise UserHasGameException()
 
         if not await GameRepository.exists(db, backlog_dto.game_id):
             raise GameNotFoundException()
