@@ -1,4 +1,5 @@
 from typing import List
+from exceptions.user_exceptions import EmailAlreadyExistsException, UserNameAlreadyExistsException
 from models.dtos.user_dto import UserCreateDTO, UserUpdateDTO
 from models.user import UserModel, UserUpdateModel
 from models.viewmodels.user_viewmodel import UserViewModel
@@ -9,6 +10,12 @@ class UserService:
     
     @staticmethod
     async def create(db, user_dto: UserCreateDTO) ->  UserViewModel:
+        
+        if await UserRepository.username_exists(db, user_dto.username):
+            raise UserNameAlreadyExistsException()
+        
+        if await UserRepository.email_exists(db, user_dto.email):
+            raise EmailAlreadyExistsException()
         
         user_model = UserModel(
             username=user_dto.username,
@@ -30,7 +37,13 @@ class UserService:
     
     @staticmethod
     async def update(db, id: str, user_update_dto: UserUpdateDTO) -> UserViewModel:
-            
+        
+        if await UserRepository.username_exists(db, user_update_dto.username):
+            raise UserNameAlreadyExistsException()
+        
+        if await UserRepository.email_exists(db, user_update_dto.email):
+            raise EmailAlreadyExistsException()
+        
         update_data = UserUpdateModel(
             email=user_update_dto.email,
             password=user_update_dto.password,

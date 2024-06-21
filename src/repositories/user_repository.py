@@ -29,3 +29,11 @@ class UserRepository:
     @staticmethod
     async def find_all(db):
         return db['users'].find()
+    
+    @staticmethod
+    async def username_exists(db, username: str):
+        return db['users'].find_one({"username": username})
+    
+    @staticmethod
+    async def email_exists(db, email: str):
+        return db['users'].find_one({"email": email})

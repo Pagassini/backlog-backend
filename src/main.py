@@ -8,7 +8,9 @@ from exceptions.genre_exceptions import GenreAlreadyExistsException, GenreNotFou
 from exceptions.handlers.game_exception_handler import GameExceptionHandler
 from exceptions.handlers.genre_exception_handler import GenreExceptionHandler
 from exceptions.handlers.platform_exception_handler import PlatformExceptionHandler
+from exceptions.handlers.user_exception_handler import UserExceptionHandler
 from exceptions.platform_exceptions import PlatformAlreadyExistsException, PlatformNotFoundException
+from exceptions.user_exceptions import EmailAlreadyExistsException, UserNameAlreadyExistsException
 from routers.games import router as game_router
 from routers.genre import router as genre_router
 from routers.platforms import router as platform_router
@@ -62,6 +64,20 @@ app.add_exception_handler(
 app.add_exception_handler(
     exc_class_or_status_code=GenreAlreadyExistsException,
     handler=GenreExceptionHandler.create_exception_handler(
+        status.HTTP_400_BAD_REQUEST
+    )
+)
+
+app.add_exception_handler(
+    exc_class_or_status_code=UserNameAlreadyExistsException,
+    handler=UserExceptionHandler.create_exception_handler(
+        status.HTTP_400_BAD_REQUEST
+    )
+)
+
+app.add_exception_handler(
+    exc_class_or_status_code=EmailAlreadyExistsException,
+    handler=UserExceptionHandler.create_exception_handler(
         status.HTTP_400_BAD_REQUEST
     )
 )
