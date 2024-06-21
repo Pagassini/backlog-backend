@@ -6,7 +6,7 @@ class GameException(Exception):
 
 class GameNotFoundException(GameException):
     def __init__(self):
-        self.message = f"One or more games not found."
+        self.message = f"Game not found."
         super().__init__(self.message)
         
 class GameAlreadyExistsException(GameException):

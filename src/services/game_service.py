@@ -1,6 +1,6 @@
 from http.client import HTTPException
 from typing import List
-from exceptions.game_exceptions import GameAlreadyExistsException
+from exceptions.game_exceptions import GameAlreadyExistsException, GameNotFoundException
 from exceptions.genre_exceptions import GenreNotFoundException
 from exceptions.platform_exceptions import PlatformNotFoundException
 from models.dtos.game_dto import GameCreateDTO, GameUpdateDTO
@@ -24,7 +24,7 @@ class GameService:
             if not await GenreRepository.exists(db, genres):
                 raise GenreNotFoundException()
         
-        if await GameRepository.exists(db, game_dto.title):
+        if await GameRepository.title_exists(db, game_dto.title):
                 raise GameAlreadyExistsException()
         
         game_model = GameModel(
@@ -45,6 +45,7 @@ class GameService:
     
     @staticmethod
     async def find_all(db) -> List[GameViewModel]:
+
         games_cursor = await GameRepository.find_all(db)
         games = []
         for game in games_cursor:
@@ -54,11 +55,18 @@ class GameService:
     
     @staticmethod
     async def find_by_id(db, id: str) -> GameViewModel:
+
+        if not await GameRepository.exists(db, id):
+                raise GameNotFoundException()
+        
         return await GameRepository.find_by_id(db, id)
     
     @staticmethod
     async def update(db, id: str, game_update_dto: GameUpdateDTO) -> GameViewModel:
         
+        if not await GameRepository.exists(db, id):
+            raise GameNotFoundException()
+
         for platform in game_update_dto.platforms:
             if not await PlatformRepository.exists(db, platform):
                 raise PlatformNotFoundException()
@@ -67,7 +75,7 @@ class GameService:
             if not await GenreRepository.exists(db, genre):
                 raise GenreNotFoundException()
         
-        if await GameRepository.exists(db, game_update_dto.title):
+        if await GameRepository.title_exists(db, game_update_dto.title):
             raise GameAlreadyExistsException()
             
         update_data = GameUpdateModel(
@@ -87,5 +95,9 @@ class GameService:
     
     @staticmethod
     async def delete(db, id: str) -> bool:
+
+        if not await GameRepository.exists(db, id):
+            raise GameNotFoundException()
+        
         deleted = await GameRepository.delete(db, id)
         return deleted
