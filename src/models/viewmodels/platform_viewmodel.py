@@ -1,5 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PlatformViewModel(BaseModel):
+    id: str = Field(..., alias='_id')
     name: str
