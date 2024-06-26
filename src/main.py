@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI, status
+from fastapi.templating import Jinja2Templates
 from pymongo import MongoClient
 from dotenv import dotenv_values
 import uvicorn
@@ -23,6 +24,8 @@ dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 config = dotenv_values(dotenv_path)
 
 app = FastAPI(title=config['PROJECT_NAME'])
+
+templates = Jinja2Templates(directory="templates")
 
 app.include_router(game_router, tags=["Games"], prefix=f"{config['PREFIX']}/games")
 app.include_router(genre_router, tags=["Genres"], prefix=f"{config['PREFIX']}/genres")
