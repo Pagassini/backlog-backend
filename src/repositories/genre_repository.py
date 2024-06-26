@@ -18,8 +18,9 @@ class GenreRepository:
     
     @staticmethod
     async def create(db, genre: GenreModel):
-        genre_dict = genre.dict(by_alias=True)
+        genre_dict = genre.model_dump(by_alias=True)
         genre_dict["_id"] = str(genre_dict["_id"])
-        result = db['genres'].insert_one(genre_dict)
+        result = await db['genres'].insert_one(genre_dict)
         genre_dict['_id'] = str(result.inserted_id)
         return genre_dict
+    
