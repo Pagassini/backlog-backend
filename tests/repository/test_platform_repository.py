@@ -7,7 +7,9 @@ import pytest_asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from models.genre import GenreModel
+from models.platform import PlatformModel
 from repositories.genre_repository import GenreRepository
+from repositories.platform_repository import PlatformRepository
 
 load_dotenv()
 
@@ -28,37 +30,37 @@ async def db():
     client.close()
     
 @pytest_asyncio.fixture
-async def genre_mock():
-    return GenreModel(
+async def platform_mock():
+    return PlatformModel(
         _id=str(uuid.uuid4()),
         name='test'
     )
     
 @pytest.mark.asyncio
-async def test_create_genre(db, genre_mock):
-    genre_repository = GenreRepository()
-    genre = await genre_repository.create(db, genre_mock)
-    assert genre is not None
+async def test_create_platform(db, platform_mock):
+    platform_repository = PlatformRepository()
+    platform = await platform_repository.create(db, platform_mock)
+    assert platform is not None
     
 @pytest.mark.asyncio
-async def test_find_all_genres(db, genre_mock):
-    await GenreRepository.create(db, genre_mock)
+async def test_find_all_platforms(db, platform_mock):
+    await PlatformRepository.create(db, platform_mock)
 
-    genres = await GenreRepository.find_all(db)
+    platforms = PlatformRepository.find_all(db)
 
-    genre_list = [genre async for genre in genres]
-    assert len(genre_list) == 1
+    platform_list = [platform async for platform in await platforms]
+    assert len(platform_list) == 1
     
 @pytest.mark.asyncio
-async def test_exists(db, genre_mock):
-    await GenreRepository.create(db, genre_mock)
-    result = GenreRepository.exists(db, genre_mock.id)
+async def test_exists(db, platform_mock):
+    await PlatformRepository.create(db, platform_mock)
+    result = PlatformRepository.exists(db, platform_mock.id)
     result_data = await result
     assert result_data is not None
     
 @pytest.mark.asyncio
-async def test_name_exists(db, genre_mock):
-    await GenreRepository.create(db, genre_mock)
-    result = GenreRepository.name_exists(db, genre_mock.name)
+async def test_name_exists(db, platform_mock):
+    await PlatformRepository.create(db, platform_mock)
+    result = PlatformRepository.name_exists(db, platform_mock.name)
     result_data = await result
     assert result_data is not None
