@@ -13,3 +13,7 @@ def fetch_users():
 def create_user(data):
     response = requests.post(f"{config['BASE_URL']}/users", json=data)
     return response.json()
+
+def delete_user(id):
+    response = requests.delete(f"{config['BASE_URL']}/users/{id}")
+    return response.json()

@@ -15,3 +15,11 @@ class UpdateBacklogButton(Button):
 class DeleteBacklogButton(Button):
     def __init__(self, parent=None):
         super().__init__("Delete Backlog", parent)
+
+class AddUserButton(QPushButton):
+    def __init__(self, parent=None):
+        super().__init__('Add User', parent)
+
+class DeleteUserButton(QPushButton):
+    def __init__(self, parent=None):
+        super().__init__('Add User', parent)
