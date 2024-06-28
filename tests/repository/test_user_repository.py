@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import uuid
 from dotenv import load_dotenv
+from pymongo import MongoClient
 import pytest
 import pytest_asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -19,14 +20,14 @@ async def db():
     if not db_uri:
         raise ValueError("Connection string could not be found")
     
-    client = AsyncIOMotorClient(db_uri)
+    client = MongoClient(db_uri)
     db = client['test_database']
     
-    await client.drop_database('test_database')
+    client.drop_database('test_database')
     
     yield db
     
-    await client.drop_database('test_database')
+    client.drop_database('test_database')
     client.close()
     
 @pytest_asyncio.fixture
@@ -49,13 +50,13 @@ async def user_updated_mock():
 @pytest.mark.asyncio
 async def test_create_user(db, user_mock):
     user_repository = UserRepository()
-    user = await user_repository.create(db, user_mock)
+    user = user_repository.create(db, user_mock)
     assert user is not None
 
 @pytest.mark.asyncio
 async def test_update_user(db, user_mock, user_updated_mock):
     await UserRepository.create(db, user_mock)
-    updated_user = await UserRepository.update(db, user_mock.id, user_updated_mock)
+    updated_user = UserRepository.update(db, user_mock.id, user_updated_mock)
     assert updated_user is not None
 
 @pytest.mark.asyncio
@@ -70,26 +71,26 @@ async def test_find_all_users(db, user_mock):
 
     users = await UserRepository.find_all(db)
 
-    user_list = [user async for user in users]
+    user_list = [user for user in users]
     assert len(user_list) == 1
 
 @pytest.mark.asyncio
 async def test_username_exists(db, user_mock):
     await UserRepository.create(db, user_mock)
-    result = await UserRepository.username_exists(db, user_mock.username)
-    result_data = await result
+    result = UserRepository.username_exists(db, user_mock.username)
+    result_data = result
     assert result_data is not None
     
 @pytest.mark.asyncio
 async def test_email_exists(db, user_mock):
     await UserRepository.create(db, user_mock)
-    result = await UserRepository.email_exists(db, user_mock.email)
-    result_data = await result
+    result = UserRepository.email_exists(db, user_mock.email)
+    result_data = result
     assert result_data is not None
 
 @pytest.mark.asyncio
 async def test_exists(db, user_mock):
     await UserRepository.create(db, user_mock)
-    result = await UserRepository.exists(db, user_mock.id)
-    result_data = await result
+    result = UserRepository.exists(db, user_mock.id)
+    result_data = result
     assert result_data is not None

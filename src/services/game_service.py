@@ -17,11 +17,11 @@ class GameService:
     async def create(db, game_dto: GameCreateDTO) -> GameViewModel:
         
         for platforms in game_dto.platforms:
-            if not await PlatformRepository.exists(db, platforms):
+            if not await PlatformRepository.name_exists(db, platforms):
                 raise PlatformNotFoundException()
         
         for genres in game_dto.genres:
-            if not await GenreRepository.exists(db, genres):
+            if not await GenreRepository.name_exists(db, genres):
                 raise GenreNotFoundException()
         
         if await GameRepository.title_exists(db, game_dto.title):
@@ -68,11 +68,11 @@ class GameService:
             raise GameNotFoundException()
 
         for platform in game_update_dto.platforms:
-            if not await PlatformRepository.exists(db, platform):
+            if not await PlatformRepository.name_exists(db, platform):
                 raise PlatformNotFoundException()
         
         for genre in game_update_dto.genres:
-            if not await GenreRepository.exists(db, genre):
+            if not await GenreRepository.name_exists(db, genre):
                 raise GenreNotFoundException()
         
         if await GameRepository.title_exists(db, game_update_dto.title):

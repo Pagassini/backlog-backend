@@ -9,10 +9,6 @@ class GenreRepository:
         return genres
     
     @staticmethod
-    async def exists(db, id: str) -> bool:
-        return db["genres"].find_one({"_id": id})
-    
-    @staticmethod
     async def name_exists(db, name: str) -> bool:
         return db["genres"].find_one({"name": name})
     
@@ -20,7 +16,7 @@ class GenreRepository:
     async def create(db, genre: GenreModel):
         genre_dict = genre.model_dump(by_alias=True)
         genre_dict["_id"] = str(genre_dict["_id"])
-        result = await db['genres'].insert_one(genre_dict)
+        result = db['genres'].insert_one(genre_dict)
         genre_dict['_id'] = str(result.inserted_id)
         return genre_dict
     

@@ -1,6 +1,7 @@
 import os
 import uuid
 from dotenv import load_dotenv
+from pymongo import MongoClient
 import pytest
 import pytest_asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -16,14 +17,14 @@ async def db():
     if not db_uri:
         raise ValueError("Connection string could not be found")
     
-    client = AsyncIOMotorClient(db_uri)
+    client = MongoClient(db_uri)
     db = client['test_database']
     
-    await client.drop_database('test_database')
+    client.drop_database('test_database')
     
     yield db
     
-    await client.drop_database('test_database')
+    client.drop_database('test_database')
     client.close()
 
 @pytest_asyncio.fixture
@@ -51,7 +52,7 @@ async def game_updated_mock():
         developer='developer updated',
         publisher='publisher updated'
     )
- 
+
 @pytest.mark.asyncio
 async def test_create_game(db, game_mock):
     game_repository = GameRepository()
@@ -73,29 +74,29 @@ async def test_delete_game(db, game_mock):
 @pytest.mark.asyncio
 async def test_find_all_games(db, game_mock):
     await GameRepository.create(db, game_mock)
-
+    
     games = await GameRepository.find_all(db)
-
-    game_list = [game async for game in games]
+    
+    game_list = [game for game in games]
     assert len(game_list) == 1
- 
+    
 @pytest.mark.asyncio
 async def test_find_game_by_id(db, game_mock):
     await GameRepository.create(db, game_mock)
-    result = await GameRepository.find_by_id(db, game_mock.id)
-    result_data = await result
+    result = GameRepository.find_by_id(db, game_mock.id)
+    result_data = result
     assert result_data is not None
 
 @pytest.mark.asyncio
 async def test_title_exists(db, game_mock):
     await GameRepository.create(db, game_mock)
-    result = await GameRepository.title_exists(db, game_mock.title)
-    result_data = await result
+    result = GameRepository.title_exists(db, game_mock.title)
+    result_data = result
     assert result_data is not None
 
 @pytest.mark.asyncio
 async def test_exists(db, game_mock):
     await GameRepository.create(db, game_mock)
-    result = await GameRepository.exists(db, game_mock.id)
-    result_data = await result
+    result = GameRepository.exists(db, game_mock.id)
+    result_data = result
     assert result_data is not None

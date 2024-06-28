@@ -9,21 +9,21 @@ class UserRepository:
     async def create(db, user: UserModel):
         user_dict = user.model_dump(by_alias=True)
         user_dict["_id"] = str(user_dict["_id"])
-        result = await db['users'].insert_one(user_dict)
+        result = db['users'].insert_one(user_dict)
         user_dict["_id"] = str(result.inserted_id)
         return user_dict
     
     @staticmethod
     async def update(db, id: str, user: UserUpdateModel):
         update_data = {k: v for k, v in user.model_dump(exclude_unset=True).items()}
-        await db["users"].update_one({"_id": id}, {"$set": update_data})
-        updated_user = await db["users"].find_one({"_id": id})
+        db["users"].update_one({"_id": id}, {"$set": update_data})
+        updated_user = db["users"].find_one({"_id": id})
         updated_user["_id"] = str(updated_user["_id"])
         return updated_user
     
     @staticmethod
     async def delete(db, id: str):
-        result = await db['users'].delete_one({"_id": id})
+        result = db['users'].delete_one({"_id": id})
         return result.deleted_count > 0
     
     @staticmethod
