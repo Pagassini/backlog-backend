@@ -1,8 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 
 class DeleteBacklogDialog(QDialog):
-    BACKGROUND_COLOR = "#2e2e2e"
-    TEXT_COLOR = "white"
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -10,7 +8,6 @@ class DeleteBacklogDialog(QDialog):
 
     def _setup_ui(self):
         self.setWindowTitle('Confirm Deletion')
-        self.setStyleSheet(f"background-color: {self.BACKGROUND_COLOR}; color: {self.TEXT_COLOR};")
 
         self.layout = QVBoxLayout(self)
 

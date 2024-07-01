@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
         for backlog in backlogs:
             game_id = backlog['game_id']
             game = fetch_games_by_id(game_id)
-            backlog['game_title'] = game['title']  # Add the game title to the backlog
+            backlog['game_title'] = game['title']
 
         self.table.load_backlogs(backlogs)
 

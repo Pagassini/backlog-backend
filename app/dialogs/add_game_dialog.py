@@ -1,24 +1,19 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from api.games import create_games
 
 class AddGameDialog(QDialog):
+    game_added = pyqtSignal()
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Add Game')
         self.setModal(True)
-
         self.layout = QVBoxLayout(self)
 
         self.title_label = QLabel('Title:')
         self.title_input = QLineEdit()
         self.layout.addWidget(self.title_label)
         self.layout.addWidget(self.title_input)
-
-        self.description_label = QLabel('Description:')
-        self.description_input = QLineEdit()
-        self.layout.addWidget(self.description_label)
-        self.layout.addWidget(self.description_input)
 
         self.platforms_label = QLabel('Platforms:')
         self.platforms_input = QLineEdit()
@@ -30,20 +25,10 @@ class AddGameDialog(QDialog):
         self.layout.addWidget(self.genres_label)
         self.layout.addWidget(self.genres_input)
 
-        self.release_date_label = QLabel('Release Date:')
-        self.release_date_input = QLineEdit()
-        self.layout.addWidget(self.release_date_label)
-        self.layout.addWidget(self.release_date_input)
-
         self.developer_label = QLabel('Developer:')
         self.developer_input = QLineEdit()
         self.layout.addWidget(self.developer_label)
         self.layout.addWidget(self.developer_input)
-
-        self.publisher_label = QLabel('Publisher:')
-        self.publisher_input = QLineEdit()
-        self.layout.addWidget(self.publisher_label)
-        self.layout.addWidget(self.publisher_input)
 
         button_layout = QHBoxLayout()
         self.add_button = QPushButton('Add Game')
@@ -59,18 +44,16 @@ class AddGameDialog(QDialog):
     def add_game(self):
         game_data = {
             'title': self.title_input.text(),
-            'description': self.description_input.text(),
             'platforms': [platform.strip() for platform in self.platforms_input.text().split(',')],
             'genres': [genre.strip() for genre in self.genres_input.text().split(',')],
-            'release_date': self.release_date_input.text(),
-            'developer': self.developer_input.text(),
-            'publisher': self.publisher_input.text()
+            'developer': self.developer_input.text()
         }
 
         try:
-            create_game(game_data)
+            create_games(game_data)
             QMessageBox.information(self, 'Success', 'Game added successfully.')
-            self.accept()  # Close the dialog on success
+            self.game_added.emit()
+            self.accept()
+            
         except Exception as e:
             QMessageBox.critical(self, 'Error', f'Failed to add game: {str(e)}')
-

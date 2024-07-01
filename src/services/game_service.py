@@ -29,12 +29,9 @@ class GameService:
         
         game_model = GameModel(
             title=game_dto.title,
-            description=game_dto.description,
             platforms=game_dto.platforms,
             genres=game_dto.genres,
-            release_date=game_dto.release_date,
             developer=game_dto.developer,
-            publisher=game_dto.publisher
         )
         
         created_game = await GameRepository.create(db, game_model)
@@ -80,12 +77,9 @@ class GameService:
             
         update_data = GameUpdateModel(
             title=game_update_dto.title,
-            description=game_update_dto.description,
             platforms=game_update_dto.platforms,
             genres= game_update_dto.genres,
-            release_date= game_update_dto.release_date,
             developer= game_update_dto.developer,
-            publisher= game_update_dto.publisher
         )
         
         updated_game = await GameRepository.update(db, id, update_data)

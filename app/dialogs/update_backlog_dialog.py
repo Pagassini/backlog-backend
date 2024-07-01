@@ -1,8 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QComboBox, QDialogButtonBox
 
 class UpdateBacklogDialog(QDialog):
-    BACKGROUND_COLOR = "#2e2e2e"
-    TEXT_COLOR = "white"
     STATUS_OPTIONS = ['finished', 'playing', 'dropped', 'completed']
 
     def __init__(self, current_status, parent=None):
@@ -11,7 +9,6 @@ class UpdateBacklogDialog(QDialog):
 
     def _setup_ui(self, current_status):
         self.setWindowTitle('Update Backlog')
-        self.setStyleSheet(f"background-color: {self.BACKGROUND_COLOR}; color: {self.TEXT_COLOR};")
 
         self.layout = QVBoxLayout(self)
 
