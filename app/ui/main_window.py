@@ -1,9 +1,10 @@
 import sys
 import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QComboBox, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QComboBox, QMessageBox, QPushButton, QSizePolicy
 from PyQt5.QtGui import QIcon
 from api.user import delete_user, fetch_users, create_user
 from api.backlog import fetch_backlogs, create_backlog, update_backlog, delete_backlog
+from api.games import fetch_games, fetch_games_by_id
 from dialogs.add_user_dialog import AddUserDialog
 from dialogs.add_backlog_dialog import AddBacklogDialog
 from dialogs.update_backlog_dialog import UpdateBacklogDialog
@@ -60,6 +61,7 @@ class MainWindow(QMainWindow):
     def _add_backlog_table(self):
         self.table = BacklogTable()
         self.layout.addWidget(self.table)
+        self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
     def _add_buttons(self):
         self.add_button = AddBacklogButton(self)
@@ -85,6 +87,12 @@ class MainWindow(QMainWindow):
             return
         self.selected_user_id = self.users[user_index]['_id']
         backlogs = fetch_backlogs(self.selected_user_id)
+        
+        for backlog in backlogs:
+            game_id = backlog['game_id']
+            game = fetch_games_by_id(game_id)
+            backlog['game_title'] = game['title']  # Add the game title to the backlog
+
         self.table.load_backlogs(backlogs)
 
     def add_backlog(self):
@@ -121,7 +129,7 @@ class MainWindow(QMainWindow):
         if dialog.exec_():
             delete_backlog(backlog_id)
             self.load_backlogs()
-            
+
     def add_user(self):
         dialog = AddUserDialog(self)
         if dialog.exec_():

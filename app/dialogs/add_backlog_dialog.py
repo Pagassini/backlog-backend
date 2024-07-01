@@ -1,49 +1,49 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QComboBox, QDialogButtonBox
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QFormLayout, QComboBox, QPushButton, QMessageBox
+from api.games import fetch_games
+from dialogs.add_game_dialog import AddGameDialog
 
 class AddBacklogDialog(QDialog):
-    BACKGROUND_COLOR = "#2e2e2e"
-    TEXT_COLOR = "white"
-    STATUS_OPTIONS = ['finished', 'playing', 'dropped', 'completed']
-
     def __init__(self, user_id, parent=None):
         super().__init__(parent)
         self.user_id = user_id
-
+        self.selected_game_id = None
+        self.setLayout(QVBoxLayout())
         self._setup_ui()
-
-    def _setup_ui(self):
-        self.setWindowTitle('Add Backlog')
-        self.setStyleSheet(f"background-color: {self.BACKGROUND_COLOR}; color: {self.TEXT_COLOR};")
-
-        self.layout = QVBoxLayout(self)
+        self._load_games()
+        self.add_game_button = QPushButton('Add Game')
+        self.add_game_button.clicked.connect(self.add_game_dialog)
+        self.layout().addWidget(self.add_game_button)
         
-        self._add_game_id_input()
-        self._add_status_input()
-        self._add_button_box()
+    def _setup_ui(self):
+        self.setWindowTitle("Add Backlog")
+        self.setLayout(QVBoxLayout())
 
-    def _add_game_id_input(self):
-        game_id_label = QLabel('Game ID:')
-        self.game_id_input = QLineEdit('', self)
-        self.layout.addWidget(game_id_label)
-        self.layout.addWidget(self.game_id_input)
+        form_layout = QFormLayout()
+        self.game_combo = QComboBox()
+        form_layout.addRow("Game:", self.game_combo)
+        self.layout().addLayout(form_layout)
 
-    def _add_status_input(self):
-        status_label = QLabel('Status:')
-        self.status_input = QComboBox(self)
-        self.status_input.addItems(self.STATUS_OPTIONS)
-        self.layout.addWidget(status_label)
-        self.layout.addWidget(self.status_input)
+        self.add_button = QPushButton("Add")
+        self.add_button.clicked.connect(self._add_backlog)
+        self.layout().addWidget(self.add_button)
 
-    def _add_button_box(self):
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, parent=self)
-        button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject)
-        self.layout.addWidget(button_box)
+    def _load_games(self):
+        games = fetch_games()
+        self.games = {game['title']: game['_id'] for game in games}
+        self.game_combo.addItems(self.games.keys())
 
+    def _add_backlog(self):
+        selected_game_title = self.game_combo.currentText()
+        self.selected_game_id = self.games[selected_game_title]
+        self.accept()
+        
+    def add_game_dialog(self):
+        dialog = AddGameDialog(self)
+        dialog.exec_()
+        
     def get_data(self):
         return {
-            'game_id': self.game_id_input.text(),
+            'game_id': self.selected_game_id,
             'user_id': self.user_id,
-            'status': self.status_input.currentText()
+            'status': 'playing'
         }
